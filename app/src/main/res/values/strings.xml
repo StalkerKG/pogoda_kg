@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">POGODA.KG</string>
+    <string name="oops">Упс!</string>
+    <string name="network_problem_message">Кажется у Вас нет активного подключения к сети, нам оно нужно что-бы получить актуальную погоду для Вас. Давайте включим интернет?</string>
+    <string name="ok">ОK</string>
+    <string name="cancel">Отмена</string>
+    <string name="last_update_message_format">Последнее обновление: %s</string>
+</resources>
