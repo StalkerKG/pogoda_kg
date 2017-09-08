@@ -1,22 +1,30 @@
 package kg.ram.weatherkg.presenter;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.widget.ArrayAdapter;
+import android.widget.RemoteViews;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import kg.ram.weatherkg.LoaderCallback;
+import kg.ram.weatherkg.R;
 import kg.ram.weatherkg.contracts.MainActivityContract;
 import kg.ram.weatherkg.helpers.Helper;
 import kg.ram.weatherkg.helpers.ImageHelper;
 import kg.ram.weatherkg.helpers.Prefs;
 import kg.ram.weatherkg.helpers.PrefsName;
 import kg.ram.weatherkg.model.DailyWeather;
+import kg.ram.weatherkg.model.DayTimeType;
 import kg.ram.weatherkg.model.Weather;
 import kg.ram.weatherkg.model.WeatherManager;
 import kg.ram.weatherkg.ui.WeatherAdapter;
+import kg.ram.weatherkg.view.WeatherWidget;
 
 public class MainActivityPresenter implements MainActivityContract.Presenter {
 
@@ -92,9 +100,12 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
                 mView.setUpdateTime(mWeatherManager.getLastUpdateTime());
                 Weather currentWeather = getCurrentWeather(dailyWeathers);
                 if (currentWeather != null) {
-                    mView.setCurrentTemperature(currentWeather.getTemperature());
-                    mView.setCurrentTemperatureIcon(ImageHelper.getWeatherDrawable(mView.getContext(),
-                            currentWeather.getImageResId()));
+                    String temperature = currentWeather.getTemperature();
+                    Drawable weatherDrawable = ImageHelper.getWeatherDrawable(mView.getContext(),
+                            currentWeather.getImageResId());
+                    updateWidgets(temperature, weatherDrawable);
+                    mView.setCurrentTemperature(temperature);
+                    mView.setCurrentTemperatureIcon(weatherDrawable);
                 }
             }
 
@@ -107,13 +118,27 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
         });
     }
 
+    private void updateWidgets(String temperature, Drawable weatherDrawable) {
+        if(mView == null) return;
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(mView.getContext());
+        int[] appWidgetIds = widgetManager.getAppWidgetIds(new ComponentName(mView.getContext(), WeatherWidget.class));
+        if (appWidgetIds != null && appWidgetIds.length > 0) {
+            for (int appWidgetId : appWidgetIds) {
+                RemoteViews rView = new RemoteViews(mView.getContext().getPackageName(), R.layout.weather_widget);
+                rView.setTextViewText(R.id.tv_widget_temperature, temperature);
+                rView.setImageViewBitmap(R.id.iv_widget_weathe, ((BitmapDrawable)weatherDrawable).getBitmap());
+                widgetManager.updateAppWidget(appWidgetId, rView);
+            }
+        }
+    }
+
     private Weather getCurrentWeather(ArrayList<DailyWeather> dailyWeathers) {
         Date date = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        Weather.DayTimeType type = Helper.getTypeByHour(hour);
+        DayTimeType type = Helper.getTypeByHour(hour);
 
         Weather weather = null;
         DailyWeather dailyWeather = dailyWeathers.get(0);

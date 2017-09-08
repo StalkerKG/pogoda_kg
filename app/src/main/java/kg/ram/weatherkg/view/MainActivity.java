@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         if (supportActionBar != null) {
             supportActionBar.setElevation(0);
         }
+
         mPresenter = new MainActivityPresenter();
         mPresenter.attach(this);
 

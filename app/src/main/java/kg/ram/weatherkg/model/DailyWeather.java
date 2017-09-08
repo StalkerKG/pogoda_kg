@@ -13,10 +13,10 @@ public class DailyWeather {
     public DailyWeather(Elements elements){
         mDate = elements.get(1).text();
         mWeathers = new Weather[4];
-        mWeathers[0] = new Weather(elements, Weather.DayTimeType.NIGHT);
-        mWeathers[1] = new Weather(elements, Weather.DayTimeType.MORNING);
-        mWeathers[2] = new Weather(elements, Weather.DayTimeType.DAY);
-        mWeathers[3] = new Weather(elements, Weather.DayTimeType.EVENING);
+        mWeathers[0] = new Weather(elements, DayTimeType.NIGHT);
+        mWeathers[1] = new Weather(elements, DayTimeType.MORNING);
+        mWeathers[2] = new Weather(elements, DayTimeType.DAY);
+        mWeathers[3] = new Weather(elements, DayTimeType.EVENING);
     }
 
     public String getDate() {

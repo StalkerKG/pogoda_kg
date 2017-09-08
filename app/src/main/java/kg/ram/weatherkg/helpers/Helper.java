@@ -3,7 +3,7 @@ package kg.ram.weatherkg.helpers;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import kg.ram.weatherkg.model.Weather;
+import kg.ram.weatherkg.model.DayTimeType;
 
 /**
  * Created by RAM on 11.08.2017.
@@ -16,15 +16,15 @@ public class Helper {
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public static Weather.DayTimeType getTypeByHour(int hour) {
+    public static DayTimeType getTypeByHour(int hour) {
         if (hour > 0 && hour <= 6)
-            return Weather.DayTimeType.NIGHT;
+            return DayTimeType.NIGHT;
         if (hour > 6 && hour <= 12)
-            return Weather.DayTimeType.MORNING;
+            return DayTimeType.MORNING;
         if (hour > 12 && hour <= 18)
-            return Weather.DayTimeType.DAY;
+            return DayTimeType.DAY;
         if (hour > 18 && hour <= 0)
-            return Weather.DayTimeType.EVENING;
-        return Weather.DayTimeType.NIGHT;
+            return DayTimeType.EVENING;
+        return DayTimeType.NIGHT;
     }
 }
